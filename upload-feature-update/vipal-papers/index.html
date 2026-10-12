@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+  <!-- Google search aur link share karte waqt ye title/description dikhta hai -->
+  <title>Vipal Raj | FAST Past Papers</title>
+  <meta name="description" content="Past papers for FAST-NUCES subjects, sorted by subject, year and exam type. Search, preview and download.">
+
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://fast-papers-vipal-raj.netlify.app/">
+
+  <!-- WhatsApp / Facebook / Google par link share karte waqt ye card dikhta hai -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Vipal Raj | FAST Past Papers">
+  <meta property="og:description" content="FAST-NUCES question papers with solutions for all courses. Search, preview and download.">
+  <meta property="og:url" content="https://fast-papers-vipal-raj.netlify.app/">
+
+  <!-- Fonts: heading ke liye Bricolage Grotesque, baqi text ke liye DM Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <!-- Saara design (colors, hover, animation) is file mein hai -->
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+<body>
+<div class="wrap">
+
+  <!-- ================= 1. HEADER: naam + Saved + Theme buttons ================= -->
+  <header>
+    <div class="brand"><span>VR</span>Vipal Raj</div>
+    <div class="tools">
+      <button class="ghost" id="uploadBtn">Upload paper</button>
+      <button class="ghost" id="savedBtn" aria-pressed="false">Saved <span id="savedN">0</span></button>
+      <button class="ghost" id="themeBtn" aria-label="Switch light or dark theme">Theme</button>
+    </div>
+  </header>
+
+  <!-- ================= 2. HERO: heading, search bar, numbers ================= -->
+  <section class="hero intro">
+    <h1>Past papers, sorted.</h1>
+    <p>Pick your subject, filter by exam, preview the paper right here. Press <kbd>/</kbd> to search.</p>
+
+    <!-- Search bar: yahan jo likhoge, JS (app.js) usse papers filter karta hai -->
+    <label class="search">
+      <span hidden>Search papers</span>
+      <input id="q" type="search" placeholder="FAST NUCES question papers with solutions, all courses" autocomplete="off">
+    </label>
+
+    <!-- Teen numbers: JS inhe papers.json se bhar ke ginti wali animation chalata hai -->
+    <div class="stats">
+      <div><b id="statPapers">0</b><span>papers</span></div>
+      <div><b id="statSubjects">0</b><span>subjects</span></div>
+      <div><b id="statSolved">0</b><span>solved</span></div>
+    </div>
+  </section>
+
+  <!-- ================= 3. SUBJECT BUTTONS: JS khud banata hai (papers/ ke folders se) ================= -->
+  <nav class="subjects" id="subjects" aria-label="Subjects"></nav>
+
+  <!-- ================= 4. FILTERS: exam type, year, solved ================= -->
+  <div class="filters">
+    <!-- Ye option names papers/<Subject>/ ke andar ke folder names se match hone chahiye -->
+    <select id="type" aria-label="Exam type">
+      <option value="">All exams</option>
+      <option>Mid</option>
+      <option>Mid 1</option>
+      <option>Mid 2</option>
+      <option>Final</option>
+      <option>Quiz</option>
+      <option>Assignment</option>
+      <option>Other</option>
+    </select>
+
+    <!-- Years JS khud add karta hai (file ke naam mein jo year likha ho) -->
+    <select id="year" aria-label="Year"><option value="">All years</option></select>
+
+    <button class="ghost" id="solved" aria-pressed="false">Solved only</button>
+    <span class="count" id="count" aria-live="polite"></span>
+  </div>
+
+  <!-- ================= 5. PAPERS LIST: har paper ek row, JS banata hai ================= -->
+  <main><ul id="list"></ul></main>
+
+  <footer>Made by Vipal Raj for FAST-NUCES students. Papers are for study use.</footer>
+</div>
+
+<!-- ================= 6. PREVIEW WINDOW: Preview dabane par PDF yahan khulta hai ================= -->
+<dialog id="dlg">
+  <div class="dh">
+    <strong id="dt"></strong>
+    <a class="btn main" id="dl" download>Download</a>
+    <button class="btn" id="dx">Close</button>
+  </div>
+  <div id="dbody"></div>
+</dialog>
+
+
+<!-- ================= UPLOAD WINDOW: koi bhi paper bhej sakta hai, par wo live tab hota hai jab owner approve kare ================= -->
+<dialog id="upDlg" class="formdlg">
+  <form id="upForm" autocomplete="off">
+    <h2>Upload a past paper</h2>
+    <p class="hint">Your paper is sent for review. It appears on the site only after it is approved.</p>
+
+    <label>Subject <select name="subject" id="upSubject" required></select></label>
+    <label>Exam <select name="type" id="upType" required></select></label>
+    <label>Year (optional) <input name="year" type="number" min="2000" max="2035" placeholder="2023"></label>
+    <label class="check"><input name="solved" type="checkbox"> This paper is solved</label>
+    <label>File (PDF or image, max 4 MB) <input name="file" id="upFile" type="file" accept=".pdf,image/png,image/jpeg,image/webp" required></label>
+
+    <!-- Bots fill this hidden box, real people never see it -->
+    <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+    <p id="upMsg" role="status"></p>
+    <div class="formacts">
+      <button type="button" class="btn" id="upCancel">Cancel</button>
+      <button type="submit" class="btn main" id="upSend">Send for review</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- Chota message jo neeche aata hai ("Saved" wagera) -->
+<div id="toast" role="status"></div>
+
+<!-- Saari functionality (search, filter, save, preview) is file mein hai -->
+<!-- papers.js: organize.py banati hai, isme tumhare saare papers ki list hoti hai -->
+<script src="papers.js"></script>
+<script src="assets/js/app.js" defer></script>
+<script src="assets/js/upload.js" defer></script>
+</body>
+</html>

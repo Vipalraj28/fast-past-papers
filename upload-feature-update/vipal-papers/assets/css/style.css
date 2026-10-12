@@ -1,0 +1,301 @@
+/* =========================================================
+   Vipal Raj Past Papers  -  style.css
+   Is file mein sirf DESIGN hai. Sections:
+     1. Colors        6. Filters
+     2. Base          7. Paper rows (hover yahan hai)
+     3. Header        8. Preview window
+     4. Hero          9. Toast message
+     5. Subjects     10. Phone layout + animations band
+   ========================================================= */
+
+
+/* ---------- 1. COLORS ----------
+   Rang badalne hain? Sirf yahan badlo, poori site badal jayegi. */
+:root {
+  --bg:      #f2f4f8;                 /* page ka background */
+  --surface: #ffffff;                 /* cards / boxes */
+  --ink:     #111c33;                 /* main text */
+  --muted:   #5b667a;                 /* halka text */
+  --line:    #d8dde8;                 /* borders */
+  --grid:    rgba(17, 28, 51, .045);  /* peeche copy-paper wali lines */
+  --hi:      #ffd23f;                 /* yellow highlighter */
+  --blue:    #2b4bff;                 /* Mid papers ka rang */
+  --green:   #0f9d6b;                 /* Assignment / Solved ka rang */
+}
+
+/* Dark mode ke colors (Theme button dabane par) */
+:root[data-theme=dark] {
+  --bg:    #0e1424;
+  --surface: #151c30;
+  --ink:   #e8ecf5;
+  --muted: #93a0b8;
+  --line:  #263049;
+  --grid:  rgba(255, 255, 255, .04);
+  --blue:  #7d93ff;
+  --green: #34d399;
+}
+
+
+/* ---------- 2. BASE ---------- */
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  color: var(--ink);
+  font: 16px/1.5 "DM Sans", system-ui, sans-serif;
+
+  /* Copy-paper jaisi halki grid lines */
+  background-color: var(--bg);
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 28px 28px;
+
+  /* iPhone notch se bachne ke liye */
+  padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
+}
+
+h1, h2, .brand { font-family: "Bricolage Grotesque", "DM Sans", sans-serif; }
+
+button, select, input { font: inherit; color: inherit; }
+
+/* Keyboard se chalne walon ko neela outline dikhta hai */
+:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+
+/* Content ki max width: laptop par beech mein, mobile par poori */
+.wrap { max-width: 980px; margin: 0 auto; padding: 0 18px; }
+
+kbd {
+  background: var(--surface); border: 1px solid var(--line);
+  border-bottom-width: 3px; border-radius: 5px; padding: 0 6px; font-size: .85em;
+}
+
+
+/* ---------- 3. HEADER ---------- */
+header { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; }
+
+.brand { font-weight: 800; font-size: 1.25rem; letter-spacing: -.02em; }
+
+/* "VR" ka yellow badge. Hover par thora ghoomta hai */
+.brand span {
+  display: inline-block;
+  background: var(--hi); color: #111c33;
+  padding: 0 6px; margin-right: 6px; border-radius: 4px;
+  transition: transform .25s cubic-bezier(.3, 1.6, .5, 1);
+}
+.brand:hover span { transform: rotate(-8deg) scale(1.12); }
+
+.tools { display: flex; gap: 8px; }
+
+/* Gol buttons (Saved, Theme, Solved only) */
+.ghost {
+  background: none; border: 1px solid var(--line); border-radius: 999px;
+  padding: 6px 14px; cursor: pointer;
+  transition: transform .15s, background .15s, border-color .15s;
+}
+.ghost:hover { transform: translateY(-2px); border-color: var(--ink); }
+.ghost:active { transform: translateY(0); }
+.ghost[aria-pressed=true] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+
+
+/* ---------- 4. HERO (sabse upar wala hissa) ---------- */
+.hero { padding: 34px 0 18px; }
+
+h1 {
+  font-size: clamp(2.2rem, 7vw, 4.2rem);  /* mobile par chota, laptop par bara */
+  line-height: 1; letter-spacing: -.035em; font-weight: 800;
+  max-width: 14ch; margin: 0 0 10px;
+}
+
+.hero p { margin: 0 0 22px; color: var(--muted); max-width: 46ch; }
+
+/* Search bar: peeche yellow "saya", click karne par bara ho jata hai */
+.search { display: block; }
+.search input {
+  width: 100%; font-size: 1.15rem; padding: 16px 18px;
+  background: var(--surface); border: 2px solid var(--ink); border-radius: 12px;
+  box-shadow: 5px 5px 0 var(--hi);
+  transition: box-shadow .18s, transform .18s;
+}
+.search input::placeholder { color: var(--muted); }
+.search input:hover { transform: translate(-1px, -1px); box-shadow: 6px 6px 0 var(--hi); }
+.search input:focus { transform: translate(-3px, -3px); box-shadow: 9px 9px 0 var(--hi); outline: none; }
+
+/* Papers / subjects / solved wale numbers */
+.stats { display: flex; gap: 30px; margin-top: 26px; }
+.stats b { display: block; font: 800 2rem/1 "Bricolage Grotesque", sans-serif; letter-spacing: -.03em; }
+.stats span { color: var(--muted); font-size: .85rem; }
+
+
+/* ---------- 5. SUBJECT BUTTONS ---------- */
+/* Mobile par ye side mein scroll hote hain */
+.subjects {
+  display: flex; gap: 8px; overflow-x: auto;
+  margin: 0 -18px; padding: 22px 18px 8px; scrollbar-width: none;
+}
+.subjects::-webkit-scrollbar { display: none; }
+
+.chip {
+  flex: none; white-space: nowrap; cursor: pointer;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
+  padding: 8px 13px;
+  transition: transform .15s, border-color .15s, box-shadow .15s;
+}
+.chip b { margin-left: 6px; color: var(--muted); font-weight: 500; }
+.chip:hover { transform: translateY(-3px); border-color: var(--ink); box-shadow: 0 4px 0 var(--hi); }
+.chip:active { transform: translateY(0); box-shadow: none; }
+
+/* Jo subject select ho: gehra rang */
+.chip[aria-pressed=true] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.chip[aria-pressed=true] b { color: var(--hi); }
+
+
+/* ---------- 6. FILTERS ---------- */
+.filters { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 12px 0; }
+
+.filters select {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 8px;
+  padding: 7px 10px; cursor: pointer; transition: border-color .15s;
+}
+.filters select:hover { border-color: var(--ink); }
+
+/* "12 papers" wala text, right side par */
+.count { margin-left: auto; color: var(--muted); font-size: .92rem; }
+
+
+/* ---------- 7. PAPER ROWS ---------- */
+ul { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+
+/* Har row ka left stripe exam type ka rang batata hai:
+   Final = gehra, Mid = neela, Quiz = peela, Assignment = hara */
+.row {
+  display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 10px 14px;
+  background: var(--surface);
+  border: 1px solid var(--line); border-left: 6px solid var(--c, var(--line)); border-radius: 10px;
+  padding: 12px 14px;
+  transition: transform .18s, box-shadow .18s;
+}
+.row[data-t=Final]      { --c: var(--ink); }
+.row[data-t^=Mid]       { --c: var(--blue); }
+.row[data-t=Quiz]       { --c: var(--hi); }
+.row[data-t=Assignment] { --c: var(--green); }
+
+/* HOVER: row upar uthti hai aur peeche us ke rang ka saya aata hai */
+.row:hover { transform: translate(-3px, -3px); box-shadow: 5px 5px 0 var(--c, var(--line)); }
+
+.row h2 { margin: 0; font-size: 1.02rem; font-weight: 700; overflow-wrap: anywhere; }
+
+.meta { display: flex; flex-wrap: wrap; gap: 6px 12px; margin-top: 3px; color: var(--muted); font-size: .86rem; }
+.ok { color: var(--green); font-weight: 700; }
+
+/* "New" badge: pichle 14 din mein add hue papers par */
+.new { background: var(--hi); color: #111c33; border-radius: 99px; padding: 0 8px; font-size: .75rem; font-weight: 700; }
+
+/* Preview / Download / Save buttons */
+.acts { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; }
+
+.btn {
+  display: inline-block; cursor: pointer; text-decoration: none; font-size: .92rem;
+  background: none; border: 1px solid var(--line); border-radius: 8px; padding: 7px 12px;
+  transition: transform .15s, background .15s, color .15s, border-color .15s;
+}
+.btn:hover { transform: translateY(-2px); border-color: var(--ink); }
+.btn:active { transform: translateY(0); }
+
+.btn.main { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.btn.main:hover { background: var(--blue); border-color: var(--blue); color: #fff; }
+
+/* Save dabane ke baad button peela ho jata hai */
+.btn[aria-pressed=true] { background: var(--hi); color: #111c33; border-color: var(--hi); }
+
+/* Jab koi paper na mile */
+.empty {
+  padding: 28px; text-align: center; color: var(--muted);
+  background: var(--surface); border: 2px dashed var(--line); border-radius: 12px;
+}
+.empty code { background: var(--bg); color: var(--ink); padding: 2px 6px; border-radius: 4px; }
+
+footer { padding: 36px 0 28px; color: var(--muted); font-size: .9rem; }
+
+
+/* ---------- 8. PREVIEW WINDOW ---------- */
+dialog {
+  width: min(980px, 96vw); height: 92vh; max-height: 92vh;
+  padding: 0; border: 0; border-radius: 12px;
+  background: var(--surface); color: var(--ink);
+}
+dialog::backdrop { background: rgba(5, 8, 18, .7); backdrop-filter: blur(3px); }
+
+/* Window khulte waqt halka sa "pop" */
+dialog[open] { animation: pop .22s ease-out; }
+
+.dh { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-bottom: 1px solid var(--line); height: 55px; }
+.dh strong { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+#dbody { height: calc(100% - 55px); }
+#dbody iframe, #dbody img { display: block; width: 100%; height: 100%; border: 0; object-fit: contain; }
+
+
+/* ---------- 9. TOAST (neeche chota message) ---------- */
+#toast {
+  position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom));
+  transform: translate(-50%, 150%);
+  background: var(--ink); color: var(--bg);
+  padding: 10px 18px; border-radius: 999px; font-size: .92rem;
+  transition: transform .3s cubic-bezier(.3, 1.4, .5, 1);
+  pointer-events: none; z-index: 10;
+}
+#toast.show { transform: translate(-50%, 0); }
+
+
+/* ---------- 10. ANIMATIONS + PHONE LAYOUT ---------- */
+
+/* Rows neeche se upar aati hain (JS filter badalne par .anim lagata hai) */
+@keyframes rise { from { opacity: 0; transform: translateY(14px); } }
+@keyframes pop  { from { opacity: 0; transform: scale(.96); } }
+
+/* Page khulte waqt hero ke hisse ek ek kar ke aate hain */
+.intro > * { animation: rise .6s cubic-bezier(.2, .7, .2, 1) both; }
+.intro > :nth-child(2) { animation-delay: .08s; }
+.intro > :nth-child(3) { animation-delay: .16s; }
+.intro > :nth-child(4) { animation-delay: .24s; }
+
+.anim .row { animation: rise .45s cubic-bezier(.2, .7, .2, 1) both; animation-delay: calc(var(--i) * 35ms); }
+
+/* Phone (600px se chhoti screen) */
+@media (max-width: 600px) {
+  .row { grid-template-columns: 1fr; }          /* buttons title ke neeche */
+  .acts { justify-content: flex-start; }
+  .count { width: 100%; margin: 0; }
+  .stats { gap: 22px; }
+  dialog { width: 100vw; height: 100vh; max-height: 100vh; border-radius: 0; }  /* preview poori screen */
+}
+
+/* Jin logon ne phone mein "reduce motion" on kiya hai, un ke liye animation band */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
+
+
+/* ---------- 11. UPLOAD FORM + ADMIN PAGE ---------- */
+.formdlg { width: min(460px, 94vw); height: auto; max-height: 92vh; padding: 22px; overflow: auto; }
+.formdlg h2 { margin: 0 0 4px; font-size: 1.4rem; }
+.hint { margin: 0 0 14px; color: var(--muted); font-size: .9rem; }
+.formdlg label { display: block; margin-bottom: 12px; font-size: .9rem; color: var(--muted); }
+.formdlg select, .formdlg input:not([type=checkbox]) {
+  display: block; width: 100%; margin-top: 4px; padding: 9px 10px; font-size: 1rem;
+  background: var(--bg); color: var(--ink); border: 1px solid var(--line); border-radius: 8px;
+}
+.formdlg .check { display: flex; align-items: center; gap: 8px; color: var(--ink); }
+.hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+.formacts { display: flex; justify-content: flex-end; gap: 8px; }
+#upMsg { min-height: 1.4em; margin: 0 0 8px; font-size: .92rem; }
+#upMsg.err { color: #e5484d; }
+#upMsg.ok { color: var(--green); font-weight: 700; }
+.adminbox { max-width: 760px; margin: 24px auto; padding: 0 18px; }
+.adminbox .card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 18px; }
+.adminbox iframe, .adminbox img { width: 100%; height: 60vh; border: 1px solid var(--line); border-radius: 8px; object-fit: contain; margin: 12px 0; }
+.btn.good { background: var(--green); border-color: var(--green); color: #fff; }
+.btn.bad { color: #e5484d; border-color: #e5484d; }
