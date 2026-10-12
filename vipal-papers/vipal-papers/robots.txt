@@ -3,4 +3,4 @@ Allow: /
 Disallow: /admin.html
 Disallow: /api/
 
-Sitemap: https://fast-papers-vipal-raj.netlify.app/sitemap.xml
+Sitemap: https://fast-past-papers-blush.vercel.app/sitemap.xml
